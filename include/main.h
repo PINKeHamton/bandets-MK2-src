@@ -24,6 +24,8 @@
  * E_CONTROLLER_MASTER is pedantically correct within the PROS styleguide, but
  * not convenient for most student programmers.
  */
+#include "pros/adi.hpp"
+#include "pros/imu.hpp"
 #define PROS_USE_SIMPLE_NAMES
 
 /**
@@ -64,6 +66,20 @@ extern "C" {
 void auton_one(void);
 void auton_two(void);
 void auton_three(void);
+
+extern pros::MotorGroup MG_Left;
+extern pros::MotorGroup MG_Right;
+extern pros::MotorGroup Elr;
+extern pros::adi::DigitalOut CEN;
+extern pros::adi::DigitalOut ARM;
+
+extern pros::Imu rimu;
+extern pros::Imu nimu;
+
+extern int auton_state;
+
+extern bool CEN_BOOL;
+extern bool ARM_BOOL;
 
 void autonomous(void);
 void initialize(void);
