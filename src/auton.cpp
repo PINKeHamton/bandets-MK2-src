@@ -1,6 +1,7 @@
 #include "../include/main.h"
 #include <cstdint>
 #include <numbers>
+#include "../include/globle.hpp"
 
 using namespace std;
 

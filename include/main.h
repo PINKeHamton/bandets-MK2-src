@@ -4,7 +4,7 @@
  * Contains common definitions and header files used throughout your PROS
  * project.
  *
- * \copyright Copyright (c) 2017-2023, Purdue University ACM SIGBots.
+ * \copyright Copyright (c) 2017-2024, Purdue University ACM SIGBots.
  * All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -24,8 +24,6 @@
  * E_CONTROLLER_MASTER is pedantically correct within the PROS styleguide, but
  * not convenient for most student programmers.
  */
-#include "pros/adi.hpp"
-#include "pros/imu.hpp"
 #define PROS_USE_SIMPLE_NAMES
 
 /**
@@ -60,43 +58,9 @@
  * that they can be called from user code (i.e. calling autonomous from a
  * button press in opcontrol() for testing purposes).
  */
-
-void auton_one(void);
-void auton_two(void);
-void auton_three(void);
-
-
-extern pros::MotorGroup MG_Left;
-extern pros::MotorGroup MG_Right;
-extern pros::Motor Elr;
-extern pros::adi::DigitalOut CEN;
-extern pros::adi::DigitalOut ARM;
-
-extern pros::Imu rimu;
-extern pros::Imu nimu;
-
-extern int auton_state;
-
-extern bool CEN_BOOL;
-extern bool ARM_BOOL;
-
-extern pros::MotorGroup MG_Left;
-extern pros::MotorGroup MG_Right;
-extern pros::Motor Elr;
-extern pros::adi::DigitalOut CEN;
-extern pros::adi::DigitalOut ARM;
-
-extern pros::Imu rimu;
-extern pros::Imu nimu;
-
-extern int auton_state;
-
-extern bool CEN_BOOL;
-extern bool ARM_BOOL;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 void autonomous(void);
 void initialize(void);
 void disabled(void);
@@ -107,6 +71,10 @@ void opcontrol(void);
 #endif
 
 #ifdef __cplusplus
+/**
+ * You can add C++-only headers here
+ */
+//#include <iostream>
 #endif
 
 #endif  // _PROS_MAIN_H_
