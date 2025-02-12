@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <numbers>
 
+using namespace std;
+
 double wheel_die = 2.72;
 
 int avg_pos() {
@@ -52,7 +54,7 @@ void auton_one() {
 
   pros::delay(50);
 
-  MG_Elr.move(-127 * 0.8);
+  Elr.move(-127 * 0.8);
 
   pros::delay(50);
 

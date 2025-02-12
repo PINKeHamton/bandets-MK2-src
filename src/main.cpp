@@ -1,8 +1,4 @@
 #include "../include/main.h"
-#include "liblvgl/llemu.hpp"
-#include "pros/misc.h"
-#include "pros/motors.h"
-#include "pros/rtos.hpp"
 
 using namespace std;
 

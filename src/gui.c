@@ -1,5 +1,4 @@
-#include "../include/main.h"
-#include <stdio.h>
+#include "../include/liblvgl/lvgl.h"
 
 void initialize() {
     /*Change the active screen's background color*/
