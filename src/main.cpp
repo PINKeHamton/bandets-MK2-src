@@ -1,6 +1,7 @@
 #include "../include/main.h"
 #include "liblvgl/llemu.hpp"
 #include "pros/misc.h"
+#include "pros/motors.h"
 #include "pros/rtos.hpp"
 #include <cstdint>
 #include <numbers>
@@ -12,27 +13,28 @@ pros::Controller branch(CONTROLLER_PARTNER);
 
 bool CEN_BOOL = false;
 bool ARM_BOOL = true;
-bool DONKER_BOOL = false;
 
 pros::adi::DigitalOut CEN('A', CEN_BOOL);
 pros::adi::DigitalOut ARM('C', ARM_BOOL);
-pros::adi::DigitalOut DONKER('B', DONKER_BOOL);
 
 pros::MotorGroup MG_Left({10, -9, 8}, pros::v5::MotorGears::blue,
                          pros::v5::MotorUnits::degrees);
 pros::MotorGroup MG_Right({-1, 2, -3}, pros::v5::MotorGears::blue,
                           pros::v5::MotorUnits::degrees);
-pros::MotorGroup MG_Elr({-6, 5}, pros::v5::MotorGears::blue,
+pros::Motor Elr(5, pros::v5::MotorGears::blue,
+                        pros::v5::MotorUnits::degrees);
+pros::MotorGroup MG_ARM({-10,11}, pros::v5::MotorGears::blue,
                         pros::v5::MotorUnits::degrees);
 
-pros::Imu imu(4);
+pros::Imu nimu(4);
+pros::Imu rimu(-7);
 
 double wheel_die = 2.72;
 
 int avg_pos() {
   int avg_left = MG_Left.get_position();
   int avg_right = MG_Right.get_position();
-  int avg_imu = imu.get_heading();
+  int avg_imu = nimu.get_heading() + rimu.get_heading();
 
   int avg = (avg_left + avg_right + avg_imu) / 2;
 
@@ -40,7 +42,7 @@ int avg_pos() {
 }
 
 void drivef(double dist, std::int32_t velocity) {
-  double r_dist = (dist / (numbers::pi * wheel_die) * 360) - 9;
+  double r_dist = (dist / (numbers::pi * wheel_die) * 360);
 
   MG_Left.move_relative(r_dist, velocity);
   MG_Right.move_relative(r_dist, velocity);
@@ -51,14 +53,18 @@ void drivef(double dist, std::int32_t velocity) {
 }
 
 void spinf(double dist, std::int32_t velocity) {
-  double r_dist = dist / (numbers::pi * wheel_die) * 360;
+  double r_dist = nimu.get_yaw() + rimu.get_yaw();
 
   MG_Left.move_relative(r_dist, velocity);
   MG_Right.move_relative(-r_dist, velocity);
+
+  while(!(r_dist < dist + 5) && (r_dist > dist - 5)) {
+    pros::delay(2);
+  }
 }
 
 void auton_one() {
-  drivef(-55, 600);
+  drivef(-44, 600);
 
   pros::delay(1000);
 
@@ -74,15 +80,37 @@ void auton_one() {
   pros::delay(50);
 
   MG_Elr.move(-127 * 0.8);
+
+  pros::delay(50);
+
 }
 
 void auton_two() {
-  drivef(-55, 1000);
+  drivef(-55, 600);
+  
+  CEN_BOOL = !CEN_BOOL;
+  CEN.set_value(CEN_BOOL);
+  
+  pros::delay(1);
 
-  spinf(180, 600);
+  Elr.move(-127 * 0.8);
+
+  pros::delay(5);
+
+  spinf(-25, 600);
+
+  drivef(-30, 600);
+  spinf(-225, 600);
+  drivef(30, 600);
+  spinf(90, 600);
+  drivef(300, 600);
+  spinf(130, 600);
+  drivef(55, 600);
 }
 
-void auton_skills() {}
+void auton_skills() {
+  
+}
 
 int auto_state = 0;
 
@@ -146,10 +174,6 @@ void opcontrol() {
       CEN.set_value(CEN_BOOL);
     }
 
-    if (trunk.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-      DONKER_BOOL = !DONKER_BOOL;
-      DONKER.set_value(DONKER_BOOL);
-    }
 
     /*======================*
      *   BRANCH CONTROLES   *
@@ -160,8 +184,19 @@ void opcontrol() {
       ARM.set_value(ARM_BOOL);
     }
 
-    MG_Elr.move(branch.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) * 0.8);
+    int ARM_THING(branch.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
 
-    pros::delay(20);
+    MG_ARM.move(ARM_THING);
+    MG_ARM.get_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+#define MAX_ARM_POS 100 
+
+    if(MG_ARM.get_position() == MAX_ARM_POS){
+      MG_ARM.get_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    }
+
+    Elr.move(branch.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) * 0.8);
+
+    pros::delay(2);
   }
 }

@@ -1,14 +1,13 @@
-#include "../include/liblvgl/llemu.h"
-#include <stdint.h>
+#include "../include/main.h"
+#include <stdio.h>
 
-lv_obj_t * pos_btn;
-lv_obj_t * neg_btn;
-lv_obj_t * term_btn;
+void initialize() {
+    /*Change the active screen's background color*/
+    lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0x003a57), LV_PART_MAIN);
 
-lv_style_t * rel;
-lv_style_t * prs;
-
-static lv_res_t btn_active(lv_obj_t * bnt) {
-	
+/*Create a white label, set its text and align it to the center*/
+    lv_obj_t * label = lv_label_create(lv_scr_act());
+    lv_label_set_text(label, "Hello world");
+    lv_obj_set_style_text_color(label, lv_color_hex(0xffffff), LV_PART_MAIN);
+    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
 }
-
