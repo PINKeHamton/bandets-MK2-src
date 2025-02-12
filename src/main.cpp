@@ -3,8 +3,6 @@
 #include "pros/misc.h"
 #include "pros/motors.h"
 #include "pros/rtos.hpp"
-#include <cstdint>
-#include <numbers>
 
 using namespace std;
 

@@ -1,4 +1,6 @@
 #include "../include/main.h"
+#include <cstdint>
+#include <numbers>
 
 double wheel_die = 2.72;
 
