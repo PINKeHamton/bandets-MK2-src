@@ -5,11 +5,13 @@ using namespace std;
 pros::Controller trunk(CONTROLLER_MASTER);
 pros::Controller branch(CONTROLLER_PARTNER);
 
-bool CEN_BOOL = true;
-bool ARM_BOOL = true;
+bool CEN_BOOL = false;
+bool TRANS_BOOL = false;
+bool DONK_BOOL = false;
 
-pros::adi::DigitalOut CEN('A', CEN_BOOL);
-pros::adi::DigitalOut ARM('C', ARM_BOOL);
+pros::adi::DigitalOut TRANS('A', TRANS_BOOL);
+pros::adi::DigitalOut CEN('B', CEN_BOOL);
+pros::adi::DigitalOut DONK('C', DONK_BOOL);
 
 pros::MotorGroup MG_Left({10, -9, 8}, pros::v5::MotorGears::blue,
                          pros::v5::MotorUnits::degrees);
@@ -17,8 +19,7 @@ pros::MotorGroup MG_Right({-1, 2, -3}, pros::v5::MotorGears::blue,
                           pros::v5::MotorUnits::degrees);
 pros::Motor Elr(21, pros::v5::MotorGears::blue,
                         pros::v5::MotorUnits::degrees);
-pros::MotorGroup MG_ARM({-10,11}, pros::v5::MotorGears::blue,
-                        pros::v5::MotorUnits::degrees);
+pros::MotorGroup MG_Lift({-5,6});
 
 pros::Imu nimu(4);
 pros::Imu rimu(-7);
@@ -29,9 +30,9 @@ void opcontrol() {
 
   while (1) {
 
-    /*======================*
-     *   TRUNK CONTROLES    *
-     *======================*/
+    /*=======================*
+     *   TRUNK CONTROLERS    *
+     *=======================*/
 
     int linear = trunk.get_analog(ANALOG_LEFT_Y);
     int strafe = trunk.get_analog(ANALOG_RIGHT_X);
@@ -60,25 +61,9 @@ void opcontrol() {
       CEN.set_value(CEN_BOOL);
     }
 
-    /*======================*
-     *   BRANCH CONTROLES   *
-     *======================*/
-
-    if (branch.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-      ARM_BOOL = !ARM_BOOL;
-      ARM.set_value(ARM_BOOL);
-    }
-
-    int ARM_THING(branch.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
-
-    MG_ARM.move(ARM_THING);
-    MG_ARM.get_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-
-#define MAX_ARM_POS 100 
-
-    if(MG_ARM.get_position() == MAX_ARM_POS){
-      MG_ARM.get_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    }
+    /*=======================*
+     *   BRANCH CONTROLERS   *
+     *=======================*/
 
     Elr.move(branch.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) * 0.8);
 
