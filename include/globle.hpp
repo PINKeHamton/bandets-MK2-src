@@ -17,9 +17,7 @@ extern pros::adi::DigitalOut ARM;
 extern pros::Imu rimu;
 extern pros::Imu nimu;
 
-extern int auton_state;
-
 extern bool CEN_BOOL;
-extern bool ARM_BOOL;
+extern bool DONK_BOOL;
 
 #endif 

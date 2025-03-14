@@ -20,31 +20,32 @@ void drivef(double dist, std::int32_t velocity) {
   MG_Left.move_relative(r_dist, velocity);
   MG_Right.move_relative(r_dist, velocity);
 
-  while (!(avg_pos() < r_dist + 5) && (avg_pos() > r_dist - 10)) {
+  while (true) {
+
+  if(!(avg_pos() < r_dist + 10) && (avg_pos() > r_dist - 10)){
+    
     pros::delay(2);
-  }
+}
+}
 }
 
 void spinf(double dist, std::int32_t velocity) {
-  double r_dist = TRAV_DIST(dist);
+  double r_dist = (nimu.get_heading() + rimu.get_heading()) /2;
+
 
   MG_Left.move_relative(r_dist, velocity);
   MG_Right.move_relative(-r_dist, velocity);
 
-  while (!(r_dist < dist + 5) && (r_dist > dist - 5)) {
-    pros::delay(2);
+
+  if (!(r_dist < dist + 10) && (r_dist > dist - 10)) {
   }
 }
 
 void mvElr(double dist, std::int32_t velocity) {
-  int elrPos = Elr.get_position();
-  #define GEAR_RAD 1
-  
-  double r_dist = (dist / (numbers::pi * GEAR_RAD)* 360);
 
-  Elr.move_relative(r_dist, velocity);
+  Elr.move_relative(dist, velocity);
 
-  while (!(r_dist < dist + 1) && (r_dist > dist -1)) {
+  while (!(dist + 1) && (dist - 1)) {
     pros::delay(2);
   }
 }
@@ -57,7 +58,4 @@ void piston(int pnu) {
         CEN_BOOL = !CEN_BOOL;
         CEN.set_value(CEN_BOOL);
     }
-  while (false) {
-    pros::delay(2);
-  }
 }

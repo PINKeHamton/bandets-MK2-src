@@ -1,4 +1,6 @@
 #include "../include/main.h"
+#include "pros/misc.h"
+#include "pros/rotation.hpp"
 
 using namespace std;
 
@@ -6,23 +8,24 @@ pros::Controller trunk(CONTROLLER_MASTER);
 pros::Controller branch(CONTROLLER_PARTNER);
 
 bool CEN_BOOL = false;
-bool TRANS_BOOL = false;
 bool DONK_BOOL = false;
 
-pros::adi::DigitalOut TRANS('A', TRANS_BOOL);
-pros::adi::DigitalOut CEN('B', CEN_BOOL);
-pros::adi::DigitalOut DONK('C', DONK_BOOL);
+pros::adi::DigitalOut CEN('A', CEN_BOOL);
+pros::adi::DigitalOut DONK('B', DONK_BOOL);
 
 pros::MotorGroup MG_Left({10, -9, 8}, pros::v5::MotorGears::blue,
                          pros::v5::MotorUnits::degrees);
 pros::MotorGroup MG_Right({-1, 2, -3}, pros::v5::MotorGears::blue,
                           pros::v5::MotorUnits::degrees);
-pros::Motor Elr(21, pros::v5::MotorGears::blue,
+pros::Motor Elr(5, pros::v5::MotorGears::blue,
                         pros::v5::MotorUnits::degrees);
-pros::MotorGroup MG_Lift({-5,6});
+pros::Motor LB(6, pros::v5::MotorGears::blue,
+                        pros::v5::MotorUnits::degrees);
 
-pros::Imu nimu(4);
-pros::Imu rimu(-7);
+pros::Imu nimu(16);
+pros::Imu rimu(-17);
+
+pros::Rotation LBR(4);
 
 void opcontrol() {
   int right;
@@ -60,6 +63,22 @@ void opcontrol() {
       CEN_BOOL = !CEN_BOOL;
       CEN.set_value(CEN_BOOL);
     }
+
+    if (trunk.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+      DONK_BOOL = !DONK_BOOL;
+      DONK.set_value(DONK_BOOL);
+    }
+    
+    bool setoff = false;
+    
+    if (trunk.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+      LB.move_relative(10, 200);
+      if (LBR.get_angle() == 25) {
+        LB.brake();
+      }
+    }
+      
+    
 
     /*=======================*
      *   BRANCH CONTROLERS   *
