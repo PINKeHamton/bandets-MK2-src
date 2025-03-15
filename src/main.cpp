@@ -59,7 +59,7 @@ void opcontrol() {
     MG_Left.move(left);
     MG_Right.move(right);
 
-    if (trunk.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+   if (trunk.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
       CEN_BOOL = !CEN_BOOL;
       CEN.set_value(CEN_BOOL);
     }
@@ -68,17 +68,23 @@ void opcontrol() {
       DONK_BOOL = !DONK_BOOL;
       DONK.set_value(DONK_BOOL);
     }
-    
+
     bool setoff = false;
-    
+
     if (trunk.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
       LB.move_relative(10, 200);
       if (LBR.get_angle() == 25) {
         LB.brake();
       }
     }
-      
-    
+
+
+    if (trunk.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+      LB.move_relative(10, 200);
+      if (LBR.get_angle() == 110) {
+        LB.brake();
+      }
+    }
 
     /*=======================*
      *   BRANCH CONTROLERS   *

@@ -9,44 +9,63 @@ using namespace std;
 
 #define TRAV_DIST(dist) (dist / (numbers::pi * WHEEL_DIE) * 360);
 
-int avg_pos() {
-  return (MG_Left.get_position() + MG_Right.get_position() +
-          nimu.get_heading() + rimu.get_heading()) / 4;
+#define errmar 3
+#define errmarIMU 10
+#define errmarELR 5
+
+int avg_wheel() {
+  return (MG_Left.get_position() + MG_Right.get_position()) /2;
+}
+
+int avg_imu() {
+  return (nimu.get_heading() + rimu.get_heading()) / 2;
 }
 
 void drivef(double dist, std::int32_t velocity) {
   double r_dist = TRAV_DIST(dist);
 
+  MG_Left.tare_position();
+  MG_Right.tare_position();
+
   MG_Left.move_relative(r_dist, velocity);
   MG_Right.move_relative(r_dist, velocity);
 
-  while (true) {
-
-  if(!(avg_pos() < r_dist + 10) && (avg_pos() > r_dist - 10)){
-    
+  while(true){
     pros::delay(2);
+    if (abs(r_dist - avg_wheel()) < errmar) {
+        break;
+    }
+  }
 }
-}
-}
+
 
 void spinf(double dist, std::int32_t velocity) {
   double r_dist = (nimu.get_heading() + rimu.get_heading()) /2;
 
 
-  MG_Left.move_relative(r_dist, velocity);
-  MG_Right.move_relative(-r_dist, velocity);
+  MG_Left.move(velocity);
+  MG_Right.move(-velocity);
 
-
-  if (!(r_dist < dist + 10) && (r_dist > dist - 10)) {
+  while(true){
+    pros::delay(2);
+    if (abs(r_dist - avg_imu()) < errmar) {
+        break;
+    }
   }
+  MG_Left.brake();
+  MG_Right.brake();
 }
 
 void mvElr(double dist, std::int32_t velocity) {
+  Elr.tare_position();
 
   Elr.move_relative(dist, velocity);
 
-  while (!(dist + 1) && (dist - 1)) {
+  while(true){
     pros::delay(2);
+    if (abs(r_dist - Elr.get_position()) < errmar) {
+        break;
+    }
   }
 }
 

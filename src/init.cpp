@@ -7,7 +7,6 @@
 #include "liblvgl/misc/lv_area.h"
 #include <cstdint>
 #include <stdio.h>
-
 struct gui_btn {
   lv_obj_t *btn;
   lv_obj_t *text;
@@ -41,6 +40,12 @@ static void sklHand(lv_event_t *e) {
   }
 }
 
+typedef enum {
+  GRAY = 0, /* skills and defult */
+  BLUE,
+  RED,
+} ColorSel;
+
 void gui() {
   lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0x282828), LV_PART_MAIN);
 
@@ -51,7 +56,7 @@ void gui() {
   lv_obj_add_flag(pos.btn, LV_OBJ_FLAG_CHECKABLE);
 
   pos.text = lv_label_create(pos.btn);
-  lv_label_set_text(pos.btn, "+");
+  lv_label_set_text(pos.text, "+");
   lv_obj_center(pos.text);
 
   struct gui_btn skl;
@@ -61,10 +66,10 @@ void gui() {
   lv_obj_add_flag(skl.btn, LV_OBJ_FLAG_CHECKABLE);
 
   skl.text = lv_label_create(skl.btn);
-  lv_label_set_text(skl.btn, "SKILLS");
+  lv_label_set_text(skl.text, "SKILLS");
   lv_obj_center(skl.text);
 }
 
 void initialize() {
-  //    gui();
+  gui();
 }
