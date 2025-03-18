@@ -1,6 +1,8 @@
 #include "../include/main.h"
 #include "pros/misc.h"
 #include "pros/rotation.hpp"
+#include "pros/rtos.hpp"
+#include <algorithm>
 
 using namespace std;
 
@@ -23,9 +25,16 @@ pros::Motor LB(6, pros::v5::MotorGears::blue,
                         pros::v5::MotorUnits::degrees);
 
 pros::Imu nimu(16);
-pros::Imu rimu(-17);
+pros::Imu rimu(17);
 
 pros::Rotation LBR(4);
+
+void mvLB(double tarPos) {
+  LB.tare_position();
+  double curPos = LB.get_position();
+  double tarto = curPos - tarPos;
+  LB.move(tarto * 5);
+}
 
 void opcontrol() {
   int right;
@@ -68,22 +77,10 @@ void opcontrol() {
       DONK_BOOL = !DONK_BOOL;
       DONK.set_value(DONK_BOOL);
     }
+    
+    if (trunk.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { 
+        mvLB(22);
 
-    bool setoff = false;
-
-    if (trunk.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-      LB.move_relative(10, 200);
-      if (LBR.get_angle() == 25) {
-        LB.brake();
-      }
-    }
-
-
-    if (trunk.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
-      LB.move_relative(10, 200);
-      if (LBR.get_angle() == 110) {
-        LB.brake();
-      }
     }
 
     /*=======================*

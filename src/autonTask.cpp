@@ -40,15 +40,14 @@ void drivef(double dist, std::int32_t velocity) {
 
 
 void spinf(double dist, std::int32_t velocity) {
-  double r_dist = (nimu.get_heading() + rimu.get_heading()) /2;
-
+  double r_dist = (nimu.get_heading() + rimu.get_heading())/2;
 
   MG_Left.move(velocity);
   MG_Right.move(-velocity);
 
   while(true){
     pros::delay(2);
-    if (abs(r_dist - avg_imu()) < errmar) {
+    if (abs(r_dist - avg_imu()) < errmarIMU) {
         break;
     }
   }
@@ -59,14 +58,15 @@ void spinf(double dist, std::int32_t velocity) {
 void mvElr(double dist, std::int32_t velocity) {
   Elr.tare_position();
 
-  Elr.move_relative(dist, velocity);
+  Elr.move(velocity);
 
   while(true){
     pros::delay(2);
-    if (abs(r_dist - Elr.get_position()) < errmar) {
+    if (abs(dist - Elr.get_position()) < errmar) {
         break;
     }
   }
+  Elr.brake();
 }
 
 typedef enum pnuState {CEN_p, DONK_p, TRANS_p} PnuState;

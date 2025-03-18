@@ -1,6 +1,8 @@
+#include <cstdint>
+
 #ifndef _AUTON_HPP_
 #define _AUTON_HPP_
 
-extern int auton_state;
+extern int8_t auton_state;
 
 #endif

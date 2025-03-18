@@ -1,4 +1,6 @@
+#include "auton.hpp"
 #include "main.h"
+#include "pros/rotation.hpp"
 
 #ifndef _GLOBLE_H_
 #define _GLOBLE_H
@@ -16,6 +18,8 @@ extern pros::adi::DigitalOut ARM;
 
 extern pros::Imu rimu;
 extern pros::Imu nimu;
+
+extern pros::Rotation LBR;
 
 extern bool CEN_BOOL;
 extern bool DONK_BOOL;
